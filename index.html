@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 	<head>
-		<title>Test</title>
+		<title>Noten lernen</title>
 		<meta charset="utf-8">
 		<style>
             *{
@@ -9,11 +9,17 @@
             }
 		
             .answer{
-                display: block;
+                display: inline-block;
                 background: #AFAFAF;
                 margin-bottom: 5px;
                 padding: 10px 10px 10px 10px;
-            }
+				width: 45%;
+				cursor: pointer;
+			}
+			
+			.answer:hover{
+				background: #BFBFBF;
+			}
             
             #container{
                 border-radius: 25px;
@@ -25,63 +31,138 @@
                 padding-top: 25px;
                 background: #DFDFDF;
             }
+			
+			#progressIndicator{
+				margin-top: 25px;
+				display: table;
+				width: 100%;
+				height: 20px;
+				background: white;
+				padding: 5px 0px 5px 0px;
+			}
+			
+			#progressBar{
+				width: 0%;
+				height: 100%;
+				background: #a7e3bc;
+				display: block;
+			}
 		</style>
 	</head>
 	<body>
         <script src="https://unpkg.com/vexflow@1.2.89/releases/vexflow-debug.js"></script>
         <div id="container">
-            <h1>Notinator 5000X</h1>
+            <h1>Noten lernen</h1>
             <div id="scoreDiv"></div>
-            <div id="answer1" class="answer">A</div>
-            <div id="answer2" class="answer">B</div>
-            <div id="answer3" class="answer">C</div>
-            <div id="answer4" class="answer">D</div>
+			<div id="answers">
+				<div id="answer1" class="answer">A3</div>
+				<div id="answer2" class="answer">B4</div>
+				<div id="answer3" class="answer">D4</div>
+				<div id="answer4" class="answer">D3</div>
+			</div>
+			<div>
+				<span>Statistik:</span><br>
+				<canvas id="piechart" width="200" height="200">
+				</canvas>
+				<br>
+				Richtige: <span id="correctNo">0</span>
+				Falsche: <span id="wrongNo">0</span>
+			</div>
+			<div id="progressIndicator">
+				<div id="progressBar"></div>
+			</div>
 		</div>
 		
 		<script>
-		/*
 		var vf = new Vex.Flow.Factory({
-            renderer: {elementId: 'scoreDiv', width: 120, height: 200}
+            renderer: {elementId: 'scoreDiv', width: 80, height: 125}
         });
 
         var score = vf.EasyScore();
         var system = vf.System();
 
         system.addStave({
-        voices: [
-            score.voice(score.notes('B4, C#4', {stem: 'down'}))
-        ]
-        }).addClef('treble').addTimeSignature('4/4');
+			voices: [score.voice(score.notes('C5/q, B4, A4, G#4'))]
+		}).addClef('treble');
 
         vf.draw();
-		*/
 		
-            VF = Vex.Flow;
-
-            var div = document.getElementById("scoreDiv")
-            var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
-
-            renderer.resize(300, 200);
-            var context = renderer.getContext();
-            context.setFont("Arial", 10, "").setBackgroundFillStyle("#FFF");
-
-            var stave = new VF.Stave(10, 40, 290);
-
-            stave.addClef("treble").addTimeSignature("4/4");
-
-            stave.setContext(context).draw();
-            
-            var notes = [
-                new VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "q" }),
-                new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q" })
-            ];
-            
-            var voice = new VF.Voice({num_beats: 4, beat_value: 4});
-            voice.addTickables(notes);
-        
-            var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
-
-            voice.draw(context, stave);
+		var piechart = document.querySelector("#piechart");
+		var context = piechart.getContext("2d");
+		
+		var possibleNotes = ["C", "D", "E", "F", "G", "A", "H"];
+		var notes = ["D4", "C3", "E5", "F4", "H3"];
+		var questionCounter = 0;
+		var correctNo = 0;
+		
+		function drawPieChart(){
+		
+			var correctCount = correctNo;
+			if(questionCounter == 0)
+				correctCount = notes.length;
+		
+			context.moveTo(100, 100);
+			context.arc(100, 100, 90.5, 0, Math.PI*(correctCount/notes.length)*2);
+			context.fillStyle = "#a7e3bc";
+			context.fill();
+			
+			context.beginPath();
+			context.moveTo(100, 100);
+			context.arc(100, 100, 90.5, Math.PI*(correctCount/notes.length)*2, Math.PI*2);
+			context.fillStyle = "#e19898";
+			context.fill();
+		}
+		
+		//Updates question divs and VexFlow note display
+		function update(){
+			//function is ensured to never use one answer twice and selects random div for correct answer, fills others with incorrects
+			var answers = document.querySelectorAll(".answer");
+			var correctIndex = Math.floor(Math.random()*3);
+			var lastIndex;
+			var tempPossible = possibleNotes;
+			
+			for(var i = 0; i < answers.length; i++)
+				answers[i].style.background = "#AFAFAF";
+			
+			console.log(correctIndex);
+			answers[correctIndex].innerHTML = notes[questionCounter];
+			for(var i = 0; i < 3; i++){
+				if(i == correctIndex) continue;
+				lastIndex = Math.floor(Math.random()*tempPossible.length);
+				answers[i] = possibleNotes[lastIndex];
+				tempPossible.splice(lastIndex, 1);
+			}
+		}
+		
+		function answer(note){
+			console.log("User answered.");
+			var answers = document.querySelectorAll(".answer");
+			console.log("Correct answer would be:" + notes[questionCounter]);
+			console.log("Answer was:" + note);
+			if(note == notes[questionCounter]){
+				correctNo++;
+				questionCounter++;
+			}
+			
+			for(var i = 0; i < answers.length; i++){
+				if(answers[i].innerHTML == notes[questionCounter])
+					answers[i].style.background = "#a7e3bc";
+				else
+					answers[i].style.background = "#e19898";
+			}
+			
+			setTimeout(update, 1000);
+		}
+		
+		var answers = document.querySelectorAll(".answer");
+		for(var i = 0; i < answers.length; i++){
+			answers[i].addEventListener("click", function(){
+				console.log(this.innerHTML);
+				answer(this.innerHTML);
+			});
+		}
+		
+		drawPieChart();
 		</script>
 	</body>
 </html>
