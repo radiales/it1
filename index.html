@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Test</title>
+		<meta charset="utf-8">
+		<style>
+            *{
+                font-family: Segoe UI, Helvetica, Trebuchet, Arial, Serif;
+            }
+		
+            .answer{
+                display: block;
+                background: #AFAFAF;
+                margin-bottom: 5px;
+                padding: 10px 10px 10px 10px;
+            }
+            
+            #container{
+                border-radius: 25px;
+                display: block;
+                margin: 0 auto;
+                width: 80%;
+                text-align: center;
+                padding-bottom: 35px;
+                padding-top: 25px;
+                background: #DFDFDF;
+            }
+		</style>
+	</head>
+	<body>
+        <script src="https://unpkg.com/vexflow@1.2.89/releases/vexflow-debug.js"></script>
+        <div id="container">
+            <h1>Notinator 5000X</h1>
+            <div id="scoreDiv"></div>
+            <div id="answer1" class="answer">A</div>
+            <div id="answer2" class="answer">B</div>
+            <div id="answer3" class="answer">C</div>
+            <div id="answer4" class="answer">D</div>
+		</div>
+		
+		<script>
+		/*
+		var vf = new Vex.Flow.Factory({
+            renderer: {elementId: 'scoreDiv', width: 120, height: 200}
+        });
+
+        var score = vf.EasyScore();
+        var system = vf.System();
+
+        system.addStave({
+        voices: [
+            score.voice(score.notes('B4, C#4', {stem: 'down'}))
+        ]
+        }).addClef('treble').addTimeSignature('4/4');
+
+        vf.draw();
+		*/
+		
+            VF = Vex.Flow;
+
+            var div = document.getElementById("scoreDiv")
+            var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+
+            renderer.resize(300, 200);
+            var context = renderer.getContext();
+            context.setFont("Arial", 10, "").setBackgroundFillStyle("#FFF");
+
+            var stave = new VF.Stave(10, 40, 290);
+
+            stave.addClef("treble").addTimeSignature("4/4");
+
+            stave.setContext(context).draw();
+            
+            var notes = [
+                new VF.StaveNote({clef: "treble", keys: ["c/4"], duration: "q" }),
+                new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q" })
+            ];
+            
+            var voice = new VF.Voice({num_beats: 4, beat_value: 4});
+            voice.addTickables(notes);
+        
+            var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
+
+            voice.draw(context, stave);
+		</script>
+	</body>
+</html>
