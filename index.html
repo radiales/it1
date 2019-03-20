@@ -47,6 +47,11 @@
 				background: #a7e3bc;
 				display: block;
 			}
+			
+			#statistics{
+				background: #CACACA;
+				margin-top: 15px;
+			}
 		</style>
 	</head>
 	<body>
@@ -60,7 +65,7 @@
 				<div id="answer3" class="answer">D4</div>
 				<div id="answer4" class="answer">D3</div>
 			</div>
-			<div>
+			<div id="statistics">
 				<span>Statistik:</span><br>
 				<canvas id="piechart" width="200" height="200">
 				</canvas>
@@ -74,18 +79,47 @@
 		</div>
 		
 		<script>
+		/*
 		var vf = new Vex.Flow.Factory({
-            renderer: {elementId: 'scoreDiv', width: 80, height: 125}
-        });
+				renderer: {elementId: 'scoreDiv', width: 80, height: 125}
+			});
+	
+			var score = vf.EasyScore();
+			var system = vf.System();
+	
+			system.addStave({
+				voices: [score.voice(score.notes('C4/q, B4, A4, G#4'))]
+			}).addClef('treble');
+	
+			vf.draw();
+		*/
+		
+		var vf = new Vex.Flow.Factory({
+			renderer: {elementId: 'scoreDiv', width: 80, height: 125}
+		});
+		
+		var score = vf.EasyScore();
+		var system = vf.System();
+		var notegroup;
+		
+		function setupVF(note){
+			//vf.context.setFillStyle("#DFDFDF");
+			//vf.context.fillRect(-5, -5, 500, 500);
+			//vf.context.setFillStyle("black");
+		
+			//if(notegroup != undefined)
+				//vf.context.svg.removeChild(notegroup);
+				
+			notegroup = vf.context.openGroup();
+		
+			system.addStave({
+				voices: [score.voice(score.notes(note+'/q, B4, A4, G#4'))]
+			}).addClef('treble');
 
-        var score = vf.EasyScore();
-        var system = vf.System();
-
-        system.addStave({
-			voices: [score.voice(score.notes('C5/q, B4, A4, G#4'))]
-		}).addClef('treble');
-
-        vf.draw();
+			vf.draw();
+			
+			vf.context.closeGroup();
+		}
 		
 		var piechart = document.querySelector("#piechart");
 		var context = piechart.getContext("2d");
@@ -95,6 +129,9 @@
 		var questionCounter = 0;
 		var correctNo = 0;
 		
+		setupVF(notes[0]);
+		
+		//Draws a pie chart showing the relation between correct and incorrect answers 
 		function drawPieChart(){
 		
 			var correctCount = correctNo;
@@ -124,7 +161,6 @@
 			for(var i = 0; i < answers.length; i++)
 				answers[i].style.background = "#AFAFAF";
 			
-			console.log(correctIndex);
 			answers[correctIndex].innerHTML = notes[questionCounter];
 			for(var i = 0; i < 3; i++){
 				if(i == correctIndex) continue;
@@ -132,8 +168,16 @@
 				answers[i] = possibleNotes[lastIndex];
 				tempPossible.splice(lastIndex, 1);
 			}
+			
+			setupVF(notes[questionCounter]);
+			drawPieChart();
+			document.querySelector("#correctNo").innerHTML = correctNo;
+			document.querySelector("#wrongNo").innerHTML = questionCounter - correctNo;
+			document.querySelector("#progressBar").style.width = questionCounter/notes.length*100 + "%";
+			console.log("Progress percentage: " + questionCounter/notes.length*100 + "%");
 		}
 		
+		//Is called when the user clicks on one of the answer divs, invokes update after 1 second, to show correct answer
 		function answer(note){
 			console.log("User answered.");
 			var answers = document.querySelectorAll(".answer");
@@ -141,23 +185,26 @@
 			console.log("Answer was:" + note);
 			if(note == notes[questionCounter]){
 				correctNo++;
-				questionCounter++;
 			}
 			
 			for(var i = 0; i < answers.length; i++){
+			console.log("innerHTML: " + answers[i].innerHTML);
+			console.log("answer: " + notes[questionCounter]);
 				if(answers[i].innerHTML == notes[questionCounter])
 					answers[i].style.background = "#a7e3bc";
 				else
 					answers[i].style.background = "#e19898";
+				//console.log("Div No. " + i + " innerHTML: " + answers[i].innerHTML);
 			}
 			
+			questionCounter++;
 			setTimeout(update, 1000);
 		}
 		
+		//Setting up event-listeners for answering
 		var answers = document.querySelectorAll(".answer");
 		for(var i = 0; i < answers.length; i++){
 			answers[i].addEventListener("click", function(){
-				console.log(this.innerHTML);
 				answer(this.innerHTML);
 			});
 		}
