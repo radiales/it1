@@ -136,16 +136,20 @@
 		
 			var correctCount = correctNo;
 			if(questionCounter == 0)
-				correctCount = notes.length;
+				correctCount = 1;
+				
+			var questionCounterAlt = questionCounter;
+			if(questionCounter == 0)
+				questionCounterAlt = 1;
 		
 			context.moveTo(100, 100);
-			context.arc(100, 100, 90.5, 0, Math.PI*(correctCount/notes.length)*2);
+			context.arc(100, 100, 90.5, 0, Math.PI*(correctCount/questionCounterAlt)*2);
 			context.fillStyle = "#a7e3bc";
 			context.fill();
 			
 			context.beginPath();
 			context.moveTo(100, 100);
-			context.arc(100, 100, 90.5, Math.PI*(correctCount/notes.length)*2, Math.PI*2);
+			context.arc(100, 100, 90.5, Math.PI*(correctCount/questionCounterAlt)*2, Math.PI*2);
 			context.fillStyle = "#e19898";
 			context.fill();
 		}
@@ -158,9 +162,11 @@
 			var lastIndex;
 			var tempPossible = possibleNotes;
 			
+			//Re-set color after indicator color for answering
 			for(var i = 0; i < answers.length; i++)
 				answers[i].style.background = "#AFAFAF";
 			
+			//Fills answer-divs
 			answers[correctIndex].innerHTML = notes[questionCounter];
 			for(var i = 0; i < 3; i++){
 				if(i == correctIndex) continue;
@@ -169,7 +175,7 @@
 				tempPossible.splice(lastIndex, 1);
 			}
 			
-			setupVF(notes[questionCounter]);
+			//setupVF(notes[questionCounter]);
 			drawPieChart();
 			document.querySelector("#correctNo").innerHTML = correctNo;
 			document.querySelector("#wrongNo").innerHTML = questionCounter - correctNo;
@@ -209,6 +215,7 @@
 			});
 		}
 		
+		//Initialize pie chart
 		drawPieChart();
 		</script>
 	</body>
