@@ -60,10 +60,10 @@
             <h1>Noten lernen</h1>
             <div id="scoreDiv"></div>
 			<div id="answers">
-				<div id="answer1" class="answer">A3</div>
-				<div id="answer2" class="answer">B4</div>
-				<div id="answer3" class="answer">D4</div>
-				<div id="answer4" class="answer">D3</div>
+				<div id="answer1" class="answer">a/3</div>
+				<div id="answer2" class="answer">b/4</div>
+				<div id="answer3" class="answer">d/4</div>
+				<div id="answer4" class="answer">d/3</div>
 			</div>
 			<div id="statistics">
 				<span>Statistik:</span><br>
@@ -92,7 +92,7 @@
 			}).addClef('treble');
 	
 			vf.draw();
-		*/
+		
 		
 		var vf = new Vex.Flow.Factory({
 			renderer: {elementId: 'scoreDiv', width: 80, height: 125}
@@ -101,15 +101,55 @@
 		var score = vf.EasyScore();
 		var system = vf.System();
 		var notegroup;
+		*/
 		
+		VF = Vex.Flow;
+		
+		//Setting up note rendering
 		function setupVF(note){
-			//vf.context.setFillStyle("#DFDFDF");
-			//vf.context.fillRect(-5, -5, 500, 500);
-			//vf.context.setFillStyle("black");
+			
+			if(document.querySelector("#scoreDiv").children.length > 0)
+				document.querySelector("#scoreDiv").removeChild(document.querySelector("#scoreDiv svg"));
 		
-			//if(notegroup != undefined)
-				//vf.context.svg.removeChild(notegroup);
-				
+			var div = document.querySelector("#scoreDiv")
+			var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
+			renderer.resize(150, 120);
+			var context = renderer.getContext();
+			
+			var stave = new VF.Stave(10, 0, 100);
+			stave.addClef("treble");
+		
+			var notes = [
+				new VF.StaveNote({clef: "treble", keys: [note], duration: "q" }),
+	
+				//placeholders, not acutally visible, lib requires them for some reason, ignore
+				new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q" }),
+				new VF.StaveNote({clef: "treble", keys: ["b/4"], duration: "qr" }),
+				new VF.StaveNote({clef: "treble", keys: ["c/4", "e/4", "g/4"], duration: "q" })
+			];
+
+			var voice = new VF.Voice({num_beats: 4,  beat_value: 4});
+			voice.addTickables(notes);
+
+			var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
+
+			stave.setContext(context).draw();
+			voice.draw(context, stave);
+		}
+		
+		//IGNORE
+		function setupVFold(note){	
+			if(document.querySelector("#scoreDiv").children.length > 0)
+				document.querySelector("#scoreDiv").removeChild(document.querySelector("#scoreDiv svg"));
+			
+			var vf = new Vex.Flow.Factory({
+				renderer: {elementId: 'scoreDiv', width: 80, height: 125}
+			});
+			
+			var score = vf.EasyScore();
+			var system = vf.System();
+			var notegroup;
+			
 			notegroup = vf.context.openGroup();
 		
 			system.addStave({
@@ -122,10 +162,11 @@
 		}
 		
 		var piechart = document.querySelector("#piechart");
-		var context = piechart.getContext("2d");
+		var pieChartContext = piechart.getContext("2d");
 		
-		var possibleNotes = ["C", "D", "E", "F", "G", "A", "H"];
-		var notes = ["D4", "C3", "E5", "F4", "H3"];
+		var possibleNotes = ["b/3", "c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4", "c/5", "d/5", "e/5"];
+		//var notes = ["D4", "C4", "E5", "F4", "H3"];
+		var notes = ["d/4", "c/4", "e/5", "f/4", "b/3"];
 		var questionCounter = 0;
 		var correctNo = 0;
 		
@@ -142,16 +183,16 @@
 			if(questionCounter == 0)
 				questionCounterAlt = 1;
 		
-			context.moveTo(100, 100);
-			context.arc(100, 100, 90.5, 0, Math.PI*(correctCount/questionCounterAlt)*2);
-			context.fillStyle = "#a7e3bc";
-			context.fill();
+			pieChartContext.moveTo(100, 100);
+			pieChartContext.arc(100, 100, 90.5, 0, Math.PI*(correctCount/questionCounterAlt)*2);
+			pieChartContext.fillStyle = "#a7e3bc";
+			pieChartContext.fill();
 			
-			context.beginPath();
-			context.moveTo(100, 100);
-			context.arc(100, 100, 90.5, Math.PI*(correctCount/questionCounterAlt)*2, Math.PI*2);
-			context.fillStyle = "#e19898";
-			context.fill();
+			pieChartContext.beginPath();
+			pieChartContext.moveTo(100, 100);
+			pieChartContext.arc(100, 100, 90.5, Math.PI*(correctCount/questionCounterAlt)*2, Math.PI*2);
+			pieChartContext.fillStyle = "#e19898";
+			pieChartContext.fill();
 		}
 		
 		//Updates question divs and VexFlow note display
@@ -166,16 +207,20 @@
 			for(var i = 0; i < answers.length; i++)
 				answers[i].style.background = "#AFAFAF";
 			
-			//Fills answer-divs
-			answers[correctIndex].innerHTML = notes[questionCounter];
-			for(var i = 0; i < 3; i++){
-				if(i == correctIndex) continue;
-				lastIndex = Math.floor(Math.random()*tempPossible.length);
-				answers[i] = possibleNotes[lastIndex];
-				tempPossible.splice(lastIndex, 1);
+			
+			if(questionCounter < notes.length){
+				//Fills answer-divs
+				answers[correctIndex].innerHTML = notes[questionCounter];
+				for(var i = 0; i < 3; i++){
+					if(i == correctIndex) continue;
+					lastIndex = Math.floor(Math.random()*tempPossible.length);
+					answers[i] = possibleNotes[lastIndex];
+					tempPossible.splice(lastIndex, 1);
+				}
+				setupVF(notes[questionCounter]);
 			}
 			
-			//setupVF(notes[questionCounter]);
+			
 			drawPieChart();
 			document.querySelector("#correctNo").innerHTML = correctNo;
 			document.querySelector("#wrongNo").innerHTML = questionCounter - correctNo;
@@ -203,8 +248,9 @@
 				//console.log("Div No. " + i + " innerHTML: " + answers[i].innerHTML);
 			}
 			
-			questionCounter++;
+			
 			setTimeout(update, 1000);
+			questionCounter++;
 		}
 		
 		//Setting up event-listeners for answering
