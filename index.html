@@ -20,6 +20,10 @@
 			.answer:hover{
 				background: #BFBFBF;
 			}
+			
+			.selectable:hover{
+				background: #BFBFBF !important;
+			}
             
             #container{
                 border-radius: 25px;
@@ -52,29 +56,99 @@
 				background: #CACACA;
 				margin-top: 15px;
 			}
+			
+			/*
+			#app{
+				display: none;
+			}
+			*/
+			
+			#start{
+				//display: block;
+				width: 100%;
+				text-align: center;
+			}
+			
+			#clefSelect{
+				display: table;
+				width: 80%;
+				text-align: center;
+				margin: 0 auto;
+			}
+			
+			.clefOption{
+				display: table-cell;
+				vertical-align: middle;
+				width: 39.5%;
+				background: #AFAFAF;
+				margin: 5px;
+				height: 15vh;
+				cursor: pointer;
+			}
+			
+			#setSelect{
+				display: inline-block;
+				width: 80%;
+			}
+			
+			#quizSelect *{
+				padding: 5px;
+			}
+			
+			/*
+			#startButton{
+				display: inline-block;
+				background: #AFAFAF;
+				width: 80%;
+				height: 10vh;
+				cursor: pointer;
+			}
+			*/
+			
+			/*
+			.selectedDiv{
+				background: #BFBFBF;
+			}
+			*/
 		</style>
 	</head>
 	<body>
         <script src="https://unpkg.com/vexflow@1.2.89/releases/vexflow-debug.js"></script>
         <div id="container">
-            <h1>Noten lernen</h1>
-            <div id="scoreDiv"></div>
-			<div id="answers">
-				<div id="answer1" class="answer">a/3</div>
-				<div id="answer2" class="answer">b/4</div>
-				<div id="answer3" class="answer">d/4</div>
-				<div id="answer4" class="answer">d/3</div>
+			<h1>Noten lernen</h1>
+			<div id="start">
+				<div id="quizSelect">
+					<select id="setSelect">
+						<option>Set 1</option>
+						<option>Set 2 (from Server)</option>
+						<option>Set 3 (from Server)</option>
+						<option>Set 4 (from Server)</option>
+					</select>
+					<div id="clefSelect">
+						<div class="clefOption selectable" treble><span>Violinschlüssel</span></div>
+						<div class="clefOption selectable" bass><span>Bassschlüssel</span></div>
+					</div>
+				</div>
 			</div>
-			<div id="statistics">
-				<span>Statistik:</span><br>
-				<canvas id="piechart" width="200" height="200">
-				</canvas>
-				<br>
-				Richtige: <span id="correctNo">0</span>
-				Falsche: <span id="wrongNo">0</span>
-			</div>
-			<div id="progressIndicator">
-				<div id="progressBar"></div>
+			<div id="app">
+				<div id="scoreDiv"></div>
+				<div id="answers">
+					<div id="answer1" class="answer">a/3</div>
+					<div id="answer2" class="answer">b/4</div>
+					<div id="answer3" class="answer">d/4</div>
+					<div id="answer4" class="answer">d/3</div>
+				</div>
+				<div id="statistics">
+					<span>Statistik:</span><br>
+					<canvas id="piechart" width="200" height="200">
+					</canvas>
+					<br>
+					Richtige: <span id="correctNo">0</span>
+					Falsche: <span id="wrongNo">0</span>
+				</div>
+				<div id="progressIndicator">
+					<div id="progressBar"></div>
+				</div>
 			</div>
 		</div>
 		
@@ -117,10 +191,10 @@
 			var context = renderer.getContext();
 			
 			var stave = new VF.Stave(10, 0, 100);
-			stave.addClef("treble");
+			stave.addClef(quizClef);
 		
 			var notes = [
-				new VF.StaveNote({clef: "treble", keys: [note], duration: "q" }),
+				new VF.StaveNote({clef: quizClef, keys: [note], duration: "q" }),
 	
 				//placeholders, not acutally visible, lib requires them for some reason, ignore
 				new VF.StaveNote({clef: "treble", keys: ["d/4"], duration: "q" }),
@@ -164,13 +238,22 @@
 		var piechart = document.querySelector("#piechart");
 		var pieChartContext = piechart.getContext("2d");
 		
+		var quizClef = "treble";
 		var possibleNotes = ["b/3", "c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4", "c/5", "d/5", "e/5"];
 		//var notes = ["D4", "C4", "E5", "F4", "H3"];
 		var notes = ["d/4", "c/4", "e/5", "f/4", "b/3"];
 		var questionCounter = 0;
 		var correctNo = 0;
 		
-		setupVF(notes[0]);
+		setupVF(notes[questionCounter]);
+		
+		function setClef(clef){
+			quizClef = clef;
+			
+			setupVF(notes[questionCounter]);
+			document.querySelector("#start").style.display = "none";
+			document.querySelector("#app").style.display = "block";
+		}
 		
 		//Draws a pie chart showing the relation between correct and incorrect answers 
 		function drawPieChart(){
@@ -183,11 +266,13 @@
 			if(questionCounter == 0)
 				questionCounterAlt = 1;
 		
+			//green
 			pieChartContext.moveTo(100, 100);
 			pieChartContext.arc(100, 100, 90.5, 0, Math.PI*(correctCount/questionCounterAlt)*2);
 			pieChartContext.fillStyle = "#a7e3bc";
 			pieChartContext.fill();
 			
+			//red
 			pieChartContext.beginPath();
 			pieChartContext.moveTo(100, 100);
 			pieChartContext.arc(100, 100, 90.5, Math.PI*(correctCount/questionCounterAlt)*2, Math.PI*2);
@@ -261,8 +346,23 @@
 			});
 		}
 		
+		var clefOptions = document.querySelectorAll(".clefOption");
+		for(var i = 0; i < clefOptions.length; i++){
+			clefOptions[i].addEventListener("click", function(){
+				if(this.hasAttribute("treble"))
+					setClef("treble");
+				else
+					setClef("bass");
+			});
+		}
+		
 		//Initialize pie chart
 		drawPieChart();
+		//Hiding app, showing start div
+		window.onload = function(){
+			document.querySelector("#start").style.display = "block";
+			document.querySelector("#app").style.display = "none";
+		}
 		</script>
 	</body>
 </html>
