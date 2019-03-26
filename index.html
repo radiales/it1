@@ -250,6 +250,11 @@
 		function setClef(clef){
 			quizClef = clef;
 			
+			if(document.querySelector("#setSelect").selectedIndex != 0){
+				console.log("TODO: implement Server fetch");
+				alert("TODO: implement Server fetch");
+			}
+			
 			setupVF(notes[questionCounter]);
 			document.querySelector("#start").style.display = "none";
 			document.querySelector("#app").style.display = "block";
