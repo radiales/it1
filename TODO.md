@@ -8,6 +8,7 @@
   -> should now be fixed
 
   
-- implement user choice between clefs
+- improve user choice between clefs
 - implement AJAX to fetch new questions
 - change question import from native JS to JSON
+- finish responsive CSS
