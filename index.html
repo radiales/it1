@@ -232,6 +232,7 @@
 		</div>
 		
 		<script>
+		"use strict";
 		/*
 		var vf = new Vex.Flow.Factory({
 				renderer: {elementId: 'scoreDiv', width: 80, height: 125}
@@ -256,7 +257,7 @@
 		var notegroup;
 		*/
 		
-		VF = Vex.Flow;
+		var VF = Vex.Flow;
 		
 		//Setting up note rendering
 		function setupVF(note){
@@ -290,7 +291,7 @@
 			context.setViewBox(0, 25, 90, 90);
 			stave.setContext(context).draw();
 			voice.draw(context, stave);
-			
+			/*
 			if(window.innerWidth > 1199){
 				//Desktop
 				context.setViewBox(0, 25, 90, 90); //size
@@ -301,7 +302,7 @@
 				//context.setViewBox(0, 25, 60, 60); //size
 				document.querySelector("svg").width = "200";
 				document.querySelector("svg").height = "200";
-			}
+			}*/
 		}
 		
 		//IGNORE
@@ -337,6 +338,7 @@
 		var notes = ["d/4", "c/4", "e/5", "f/4", "b/3"];
 		var questionCounter = 0;
 		var correctNo = 0;
+		var appResponse;
 		
 		setupVF(notes[questionCounter]);
 		
@@ -344,8 +346,8 @@
 			quizClef = clef;
 			
 			if(document.querySelector("#setSelect").selectedIndex != 0){
-				console.log("TODO: implement Server fetch");
-				alert("TODO: implement Server fetch");
+				console.log("Calling " + fetchQuestions);
+				fetchQuestions();
 			}
 			
 			setupVF(notes[questionCounter]);
@@ -452,6 +454,20 @@
 				else
 					setClef("bass");
 			});
+		}
+		
+		function fetchQuestions(){
+			var xh = new XMLHttpRequest();
+			xh.responseType = "json";
+			
+			xh.onreadystatechange = function(){
+				if(this.readystate == 4 && this.status == 200){
+					appResponse = this.response;
+					console.log(this.response);
+				}
+			};
+			xh.open("GET", "questions.json");
+			xh.send();
 		}
 		
 		//Initialize pie chart
