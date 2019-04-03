@@ -1,27 +1,4 @@
 "use strict";
-/*
-var vf = new Vex.Flow.Factory({
-		renderer: {elementId: 'scoreDiv', width: 80, height: 125}
-	});
-
-	var score = vf.EasyScore();
-	var system = vf.System();
-
-	system.addStave({
-		voices: [score.voice(score.notes('C4/q, B4, A4, G#4'))]
-	}).addClef('treble');
-
-	vf.draw();
-
-
-var vf = new Vex.Flow.Factory({
-	renderer: {elementId: 'scoreDiv', width: 80, height: 125}
-});
-
-var score = vf.EasyScore();
-var system = vf.System();
-var notegroup;
-*/
 
 var VF = Vex.Flow;
 
@@ -71,33 +48,14 @@ function setupVF(note){
 	}*/
 }
 
-//IGNORE
-function setupVFold(note){	
-	if(document.querySelector("#scoreDiv").children.length > 0)
-		document.querySelector("#scoreDiv").removeChild(document.querySelector("#scoreDiv svg"));
-	
-	var vf = new Vex.Flow.Factory({
-		renderer: {elementId: 'scoreDiv', width: 80, height: 125}
-	});
-	
-	var score = vf.EasyScore();
-	var system = vf.System();
-	var notegroup;
-	
-	notegroup = vf.context.openGroup();
-
-	system.addStave({
-		voices: [score.voice(score.notes(note+'/q, B4, A4, G#4'))]
-	}).addClef('treble');
-
-	vf.draw();
-	
-	vf.context.closeGroup();
-}
+/******************************************************************************************************/
+//													Globals
+/******************************************************************************************************/
 
 var piechart = document.querySelector("#piechart");
 var pieChartContext = piechart.getContext("2d");
 
+const answerHandler = document.querySelectorAll(".answer");
 var quizClef = "treble";
 var possibleNotes = ["b/3", "c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4", "c/5", "d/5", "e/5"];
 //var notes = ["D4", "C4", "E5", "F4", "H3"];
@@ -165,7 +123,7 @@ function update(){
 		for(var i = 0; i < 3; i++){
 			if(i == correctIndex) continue;
 			lastIndex = Math.floor(Math.random()*tempPossible.length);
-			answers[i] = possibleNotes[lastIndex];
+			answerHandler[i].innerHTML = possibleNotes[lastIndex];
 			tempPossible.splice(lastIndex, 1);
 		}
 		setupVF(notes[questionCounter]);
