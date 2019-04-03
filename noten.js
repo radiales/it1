@@ -104,6 +104,32 @@ function drawPieChart(){
 	pieChartContext.fill();
 }
 
+function updateJSON(tasks){
+	var correctIndex = Math.floor(Math.random()*3);
+	var possibleAnswers = tasks[questionCounter].l.slice(0);
+	possibleAnswers = possibleAnswers.shuffle().slice(0);
+	console.log(possibleAnswers);
+	
+	//Re-set color after indicator color for answering
+	for(var i = 0; i < answers.length; i++)
+		answers[i].style.background = "#AFAFAF";
+	
+	if(questionCounter < tasks.length){
+		//Fills answer-divs
+		for(var i = 0; i < 3; i++){
+			answerHandler[i].innerHTML = possibleAnswers[i];
+		}
+		setupVF(auf1[0].a.toLowerCase()[0] + "/" + auf1[0].a.toLowerCase()[1]);
+		
+		//Drawing indicators for correct and incorrect answers, progress bar, and pie chart
+		drawPieChart();
+		document.querySelector("#correctNo").innerHTML = correctNo;
+		document.querySelector("#wrongNo").innerHTML = questionCounter - correctNo;
+		document.querySelector("#progressBar").style.width = questionCounter/notes.length*100 + "%";
+		console.log("Progress percentage: " + questionCounter/notes.length*100 + "%");
+	}
+}
+
 //Updates question divs and VexFlow note display
 function update(){
 	//function is ensured to never use one answer twice and selects random div for correct answer, fills others with incorrects
@@ -130,6 +156,7 @@ function update(){
 	}
 	
 	
+	//Drawing indicators for correct and incorrect answers, progress bar, and pie chart
 	drawPieChart();
 	document.querySelector("#correctNo").innerHTML = correctNo;
 	document.querySelector("#wrongNo").innerHTML = questionCounter - correctNo;
@@ -139,25 +166,24 @@ function update(){
 
 //Is called when the user clicks on one of the answer divs, invokes update after 1 second, to show correct answer
 function answer(note){
+	//Debug
 	console.log("User answered.");
-	var answers = document.querySelectorAll(".answer");
 	console.log("Correct answer would be:" + notes[questionCounter]);
 	console.log("Answer was:" + note);
+	
 	if(note == notes[questionCounter]){
 		correctNo++;
 	}
 	
-	for(var i = 0; i < answers.length; i++){
-	console.log("innerHTML: " + answers[i].innerHTML);
-	console.log("answer: " + notes[questionCounter]);
-		if(answers[i].innerHTML == notes[questionCounter])
-			answers[i].style.background = "#a7e3bc";
-		else
-			answers[i].style.background = "#e19898";
-		//console.log("Div No. " + i + " innerHTML: " + answers[i].innerHTML);
+	//Colors indicate the correct and incorrect answers
+	for(var i = 0; i < answerHandler.length; i++){
+	if(answerHandler[i].innerHTML == notes[questionCounter])
+		answerHandler[i].style.background = "#a7e3bc"; //green
+	else
+		answerHandler[i].style.background = "#e19898"; //red
 	}
 	
-	
+	//Hold back function to let user see what answers were correct or incorrect
 	setTimeout(update, 1000);
 	questionCounter++;
 }
@@ -170,6 +196,7 @@ for(var i = 0; i < answers.length; i++){
 	});
 }
 
+//Function to let user choose preferred clef
 var clefOptions = document.querySelectorAll(".clefOption");
 for(var i = 0; i < clefOptions.length; i++){
 	clefOptions[i].addEventListener("click", function(){
@@ -180,6 +207,7 @@ for(var i = 0; i < clefOptions.length; i++){
 	});
 }
 
+//Fetch new questions from server as json
 function fetchQuestions(){
 	var xh = new XMLHttpRequest();
 	xh.responseType = "json";
