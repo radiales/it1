@@ -1,185 +1,185 @@
-            *{
-                font-family: Segoe UI, Helvetica, Trebuchet, Arial, Serif;
-				font-size: 5vw;
-            }
-			
-			body, html{
-				overflow-y: hidden;
-				position: relative;
-			}
-			
-			body{
-				margin: 0;
-				padding: 0;
-				border: 0;
-				outline: 0;
-				height: 100vh;
-				width: 100vw;
-			}
+*{
+    font-family: Segoe UI, Helvetica, Trebuchet, Arial, Serif;
+	font-size: 5vw;
+}
+
+body, html{
+	overflow-y: hidden;
+	position: relative;
+}
+
+body{
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	height: 100vh;
+	width: 100vw;
+}
+
+.answer{
+    display: block;
+    background: #AFAFAF;
+    margin-bottom: 5px;
+    padding: 10px 10px 10px 10px;
+	cursor: pointer;
+	height: 7vh;
+}
+
+.answer:hover{
+	background: #BFBFBF;
+}
+
+.selectable:hover{
+	background: #BFBFBF !important;
+}
+
+#container{
+    display: block;
+    margin: 0 auto;
+    width: 90%;
+    text-align: center;
+    background: #DFDFDF;
+	height: 100vh;
+	overflow: hidden;
+	position: relative;
+}
+
+h1, h2, h3, h4{
+	font-size: 12vw;
+	margin: 0;
+	padding: 10px;
+}
+
+@media only screen and (min-width: 1200px) {
+	*{
+		font-size: 12pt;
+	}
+
+	body{
+		height: auto;
+		overflow-y: hidden;
+	}
+
+	#container {
+		border-radius: 25px;
+		width: 80%;
+		padding-bottom: 35px;
+		padding-top: 25px;
+		height: auto;
+		margin-top: 25px;
+	}
+	
+	h1, h2, h3, h4{
+		font-size: 36pt;
+	}
+	
+	#clefSelect *{
+		line-height: normal !important;
+		height: 10vh;
+	}
+	
+	.clefOption{
+		width: 39.5% !important;
+		display: table-cell !important;
 		
-            .answer{
-                display: block;
-                background: #AFAFAF;
-                margin-bottom: 5px;
-                padding: 10px 10px 10px 10px;
-				cursor: pointer;
-				height: 7vh;
-			}
-			
-			.answer:hover{
-				background: #BFBFBF;
-			}
-			
-			.selectable:hover{
-				background: #BFBFBF !important;
-			}
-            
-            #container{
-                display: block;
-                margin: 0 auto;
-                width: 90%;
-                text-align: center;
-                background: #DFDFDF;
-				height: 100vh;
-				overflow: hidden;
-				position: relative;
-            }
-			
-			h1, h2, h3, h4{
-				font-size: 12vw;
-				margin: 0;
-				padding: 10px;
-			}
-			
-			@media only screen and (min-width: 1200px) {
-				*{
-					font-size: 12pt;
-				}
-			
-				body{
-					height: auto;
-					overflow-y: hidden;
-				}
-			
-				#container {
-					border-radius: 25px;
-					width: 80%;
-					padding-bottom: 35px;
-					padding-top: 25px;
-					height: auto;
-					margin-top: 25px;
-				}
-				
-				h1, h2, h3, h4{
-					font-size: 36pt;
-				}
-				
-				#clefSelect *{
-					line-height: normal !important;
-					height: 10vh;
-				}
-				
-				.clefOption{
-					width: 39.5% !important;
-					display: table-cell !important;
-					
-				}
-				
-				.answer{
-					width: 45%;
-					display: inline-block;
-					height: auto;
-				}
-				
-				#progressIndicator{
-					height: 20px !important;
-					padding: 5px 0 5px 0;
-				}
-				
-				#scoreDiv{
-					height: auto;
-				}
-			}
-			
-			#scoreDiv{
-				height: 15vh;
-			}
-			
-			#progressIndicator{
-				margin-top: 25px;
-				display: table;
-				width: 100%;
-				height: 4vh;
-				background: white;
-				padding: 10px 0px 10px 0px;
-			}
-			
-			#progressBar{
-				width: 0%;
-				height: 100%;
-				background: #a7e3bc;
-				display: block;
-			}
-			
-			#statistics{
-				background: #CACACA;
-				margin-top: 15px;
-			}
-			
-			/*
-			#app{
-				display: none;
-			}
-			*/
-			
-			#start{
-				//display: block;
-				width: 100%;
-				text-align: center;
-			}
-			
-			#clefSelect{
-				display: table;
-				width: 80%;
-				text-align: center;
-				margin: 0 auto;
-			}
-			
-			.clefOption{
-				display: block;
-				vertical-align: middle;
-				width: 100%;
-				background: #AFAFAF;
-				margin: 5px;
-				cursor: pointer;
-				height: 35vh;
-			}
-			
-			#setSelect{
-				display: inline-block;
-				width: 80%;
-			}
-			
-			#clefSelect *{
-				line-height: 32.5vh;
-			}
-			
-			#quizSelect *{
-				padding: 5px;
-			}
-			
-			/*
-			#startButton{
-				display: inline-block;
-				background: #AFAFAF;
-				width: 80%;
-				height: 10vh;
-				cursor: pointer;
-			}
-			*/
-			
-			/*
-			.selectedDiv{
-				background: #BFBFBF;
-			}
-			*/
+	}
+	
+	.answer{
+		width: 45%;
+		display: inline-block;
+		height: auto;
+	}
+	
+	#progressIndicator{
+		height: 20px !important;
+		padding: 5px 0 5px 0;
+	}
+	
+	#scoreDiv{
+		height: auto;
+	}
+}
+
+#scoreDiv{
+	height: 15vh;
+}
+
+#progressIndicator{
+	margin-top: 25px;
+	display: table;
+	width: 100%;
+	height: 4vh;
+	background: white;
+	padding: 10px 0px 10px 0px;
+}
+
+#progressBar{
+	width: 0%;
+	height: 100%;
+	background: #a7e3bc;
+	display: block;
+}
+
+#statistics{
+	background: #CACACA;
+	margin-top: 15px;
+}
+
+/*
+#app{
+	display: none;
+}
+*/
+
+#start{
+	//display: block;
+	width: 100%;
+	text-align: center;
+}
+
+#clefSelect{
+	display: table;
+	width: 80%;
+	text-align: center;
+	margin: 0 auto;
+}
+
+.clefOption{
+	display: block;
+	vertical-align: middle;
+	width: 100%;
+	background: #AFAFAF;
+	margin: 5px;
+	cursor: pointer;
+	height: 35vh;
+}
+
+#setSelect{
+	display: inline-block;
+	width: 80%;
+}
+
+#clefSelect *{
+	line-height: 32.5vh;
+}
+
+#quizSelect *{
+	padding: 5px;
+}
+
+/*
+#startButton{
+	display: inline-block;
+	background: #AFAFAF;
+	width: 80%;
+	height: 10vh;
+	cursor: pointer;
+}
+*/
+
+/*
+.selectedDiv{
+	background: #BFBFBF;
+}
+*/
