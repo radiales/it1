@@ -1,6 +1,8 @@
 # TODOs
 
-- implement changing note displayed to actual question !
+- implement changing note displayed to actual question
+  -> check if really doesn't work
+
 - After all questions got answered no endscreen appears 
 - improve user choice between clefs
 - implement AJAX to fetch new questions

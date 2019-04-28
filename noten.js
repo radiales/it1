@@ -30,7 +30,7 @@ function setupVF(note){
 
 	var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 400);
 
-	console.log("Resized.");
+	//console.log("Resized.");
 	context.setViewBox(0, 25, 90, 90);
 	stave.setContext(context).draw();
 	voice.draw(context, stave);
@@ -63,6 +63,15 @@ var notes = ["d/4", "c/4", "e/5", "f/4", "b/3"];
 var questionCounter = 0;
 var correctNo = 0;
 var appResponse;
+
+var aufg1 = { 
+	note: [
+		{"a":"C4", "l":["C","D","E","H"]},
+		{"a":"D4", "l":["D","C","G","F"]},
+		{"a":"F4", "l":["F","C","G","E"]},
+		{"a":"B4", "l":["H","F","D","E"]},
+	]
+};
 
 setupVF(notes[questionCounter]);
 
@@ -104,11 +113,11 @@ function drawPieChart(){
 	pieChartContext.fill();
 }
 
-function updateJSON(tasks){
+function updateJSON(tasks, initialCall){
 	var correctIndex = Math.floor(Math.random()*3);
 	var possibleAnswers = tasks[questionCounter].l.slice(0);
 	possibleAnswers = possibleAnswers.shuffle().slice(0);
-	console.log(possibleAnswers);
+	//console.log(possibleAnswers);
 	
 	//Re-set color after indicator color for answering
 	for(var i = 0; i < answers.length; i++)
@@ -116,17 +125,23 @@ function updateJSON(tasks){
 	
 	if(questionCounter < tasks.length){
 		//Fills answer-divs
-		for(var i = 0; i < 3; i++){
+		for(var i = 0; i < 4; i++){
 			answerHandler[i].innerHTML = possibleAnswers[i];
 		}
-		setupVF(auf1[0].a.toLowerCase()[0] + "/" + auf1[0].a.toLowerCase()[1]);
+		//TODO: in current tasks, answers don't contain numbers. Should these be added automatically?
+		//setupVF(tasks[questionCounter].a.toLowerCase()[0] + "/" + tasks[questionCounter].a.toLowerCase()[1]);
+		setupVF(tasks[questionCounter].a.toLowerCase()[0] + "/4");
+		console.log("Called setupVF with: " + tasks[questionCounter].a.toLowerCase()[0] + "/4");
 		
+		if(questionCounter < aufg1["note"].length && !initialCall)
+			questionCounter++;
+
 		//Drawing indicators for correct and incorrect answers, progress bar, and pie chart
 		drawPieChart();
 		document.querySelector("#correctNo").innerHTML = correctNo;
 		document.querySelector("#wrongNo").innerHTML = questionCounter - correctNo;
-		document.querySelector("#progressBar").style.width = questionCounter/notes.length*100 + "%";
-		console.log("Progress percentage: " + questionCounter/notes.length*100 + "%");
+		document.querySelector("#progressBar").style.width = questionCounter/tasks.length*100 + "%";
+		console.log("Progress percentage: " + questionCounter/tasks.length*100 + "%");
 	}
 }
 
@@ -167,33 +182,31 @@ function update(){
 //Is called when the user clicks on one of the answer divs, invokes update after 1 second, to show correct answer
 function answer(note){
 	//Debug
-	console.log("User answered.");
 	console.log("Correct answer would be:" + notes[questionCounter]);
 	console.log("Answer was:" + note);
 	
-	if(note == notes[questionCounter]){
+	if(note == notes[questionCounter] || note == aufg1["note"][questionCounter].a){
 		correctNo++;
 	}
 	
 	//Colors indicate the correct and incorrect answers
 	for(var i = 0; i < answerHandler.length; i++){
-	if(answerHandler[i].innerHTML == notes[questionCounter])
-		answerHandler[i].style.background = "#a7e3bc"; //green
-	else
-		answerHandler[i].style.background = "#e19898"; //red
+		//if(answerHandler[i].innerHTML == notes[questionCounter])
+		try{
+        	if(answerHandler[i].innerHTML.toLowerCase().indexOf(aufg1.note[questionCounter].a) != -1)
+        	     answerHandler[i].style.background = "#a7e3bc";	//green
+        	 else
+			 	answerHandler[i].style.background = "#e19898";	//red
+		} catch(e){
+			console.error(e);
+			console.log("Question Counter: " + questionCounter);
+		}
 	}
 	
-	//Hold back function to let user see what answers were correct or incorrect
-	setTimeout(update, 1000);
-	questionCounter++;
-}
 
-//Setting up event-listeners for answering
-var answers = document.querySelectorAll(".answer");
-for(var i = 0; i < answers.length; i++){
-	answers[i].addEventListener("click", function(){
-		answer(this.innerHTML);
-	});
+	//Hold back function to let user see what answers were correct or incorrect
+	//setTimeout(update, 1000);
+	setTimeout(updateJSON(aufg1.note, false), 1000);
 }
 
 //Function to let user choose preferred clef
@@ -222,10 +235,19 @@ function fetchQuestions(){
 	xh.send();
 }
 
+//Setting up event-listeners for answering
+var answers = document.querySelectorAll(".answer");
+for(var i = 0; i < answers.length; i++){
+	answers[i].addEventListener("click", function(){
+		answer((this.innerHTML).toLowerCase()+"/4");
+	});
+}
+
 //Initialize pie chart
 drawPieChart();
 //Hiding app, showing start div
 window.onload = function(){
 	document.querySelector("#start").style.display = "block";
 	document.querySelector("#app").style.display = "none";
+    updateJSON(aufg1.note, true);
 }
