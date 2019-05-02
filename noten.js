@@ -188,6 +188,11 @@ function answer(note){
 	if(note == notes[questionCounter] || note == aufg1["note"][questionCounter].a){
 		correctNo++;
 	}
+
+	if(questionCounter == aufg1["note"].length - 1){
+		document.querySelector("#end").style.display = "block";
+		document.querySelector("#answers").style.display = "none";
+	}
 	
 	//Colors indicate the correct and incorrect answers
 	for(var i = 0; i < answerHandler.length; i++){

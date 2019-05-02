@@ -17,7 +17,7 @@ body{
 	width: 100vw;
 }
 
-.answer{
+.Button{
     display: block;
     background: #AFAFAF;
     margin-bottom: 5px;
@@ -26,7 +26,7 @@ body{
 	height: 7vh;
 }
 
-.answer:hover{
+.Button:hover{
 	background: #BFBFBF;
 }
 
@@ -85,7 +85,7 @@ h1, h2, h3, h4{
 		
 	}
 	
-	.answer{
+	.Button{
 		width: 45%;
 		display: inline-block;
 		height: auto;
@@ -103,6 +103,11 @@ h1, h2, h3, h4{
 
 #scoreDiv{
 	height: 15vh;
+}
+
+#end{
+	display: none;
+	padding: 10px;
 }
 
 #progressIndicator{
@@ -133,7 +138,7 @@ h1, h2, h3, h4{
 */
 
 #start{
-	//display: block;
+	display: block;
 	width: 100%;
 	text-align: center;
 }
@@ -146,7 +151,7 @@ h1, h2, h3, h4{
 }
 
 .clefOption{
-	display: block;
+	/*display: block;*/
 	vertical-align: middle;
 	width: 100%;
 	background: #AFAFAF;

@@ -1,10 +1,5 @@
 # TODOs
 
-- implement changing note displayed to actual question
-  -> check if really doesn't work
-
-- After all questions got answered no endscreen appears 
-- improve user choice between clefs
+- allow user to restart app
 - implement AJAX to fetch new questions
-- change question import from native JS to JSON
-- finish responsive CSS
+- check if all CSS is really responsive
