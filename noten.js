@@ -79,10 +79,16 @@ function setClef(clef){
 	quizClef = clef;
 	
 	if(document.querySelector("#setSelect").selectedIndex != 0){
-		console.log("Calling " + fetchQuestions);
+		console.log("Calling fetchQuestions");
 		fetchQuestions();
+		var note = JSON.parse(appResponse)["noten" + document.querySelector("#setSelect").selectedIndex];
+		//console.log("Selected index: " + document.querySelector("#setSelect").selectedIndex);
+		console.dir(note);
+		aufg1 = {note};
 	}
 	
+	//console.log("appResponse that setClef can see: " + appResponse);
+
 	setupVF(notes[questionCounter]);
 	document.querySelector("#start").style.display = "none";
 	document.querySelector("#app").style.display = "block";
@@ -179,6 +185,14 @@ function update(){
 	console.log("Progress percentage: " + questionCounter/notes.length*100 + "%");
 }
 
+function resetApp(){
+	questionCounter = 0;
+	correctNo = 0;
+
+	window.onload();
+	drawPieChart();
+}
+
 //Is called when the user clicks on one of the answer divs, invokes update after 1 second, to show correct answer
 function answer(note){
 	//Debug
@@ -228,15 +242,15 @@ for(var i = 0; i < clefOptions.length; i++){
 //Fetch new questions from server as json
 function fetchQuestions(){
 	var xh = new XMLHttpRequest();
-	xh.responseType = "json";
-	
+	//xh.responseType = "json";		//synchronous request can't set reponseType per definition
+
 	xh.onreadystatechange = function(){
-		if(this.readystate == 4 && this.status == 200){
+		if(this.readyState == 4 && this.status == 200){
 			appResponse = this.response;
-			console.log(this.response);
+			//console.log(this.response);
 		}
 	};
-	xh.open("GET", "questions.json");
+	xh.open("GET", "aufgaben.json", false);		//CAUTION, request is set to synchronous because app can't continue without result
 	xh.send();
 }
 
@@ -254,5 +268,7 @@ drawPieChart();
 window.onload = function(){
 	document.querySelector("#start").style.display = "block";
 	document.querySelector("#app").style.display = "none";
+	document.querySelector("#answers").style.display = "block";
+	document.querySelector("#end").style.display = "none";
     updateJSON(aufg1.note, true);
 }

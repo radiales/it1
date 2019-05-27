@@ -1,5 +1,5 @@
 # TODOs
 
-- allow user to restart app
+- check if bass treble is working properly
 - implement AJAX to fetch new questions
-- check if all CSS is really responsive
+- check with Professor if given AJAX-Question format is correct
