@@ -81,17 +81,19 @@ function setClef(clef){
 	if(document.querySelector("#setSelect").selectedIndex != 0){
 		console.log("Calling fetchQuestions");
 		fetchQuestions();
-		var note = JSON.parse(appResponse)["noten" + document.querySelector("#setSelect").selectedIndex];
-		//console.log("Selected index: " + document.querySelector("#setSelect").selectedIndex);
+		var note = JSON.parse(appResponse)["noten" + document.querySelector("#setSelect").selectedIndex]; //TODO: Check if -1 really is correct
 		console.dir(note);
 		aufg1 = {note};
 	}
-	
-	//console.log("appResponse that setClef can see: " + appResponse);
 
-	setupVF(notes[questionCounter]);
+	//setupVF(notes[questionCounter]);
+	var VFformatted = aufg1["note"][questionCounter]["a"].toLocaleLowerCase();
+	console.log("VFformat: " + VFformatted[0]+"/"+VFformatted[1]);
+	setupVF(VFformatted[0]+"/"+VFformatted[1]);
 	document.querySelector("#start").style.display = "none";
 	document.querySelector("#app").style.display = "block";
+
+	updateJSON(aufg1.note, true);
 }
 
 //Draws a pie chart showing the relation between correct and incorrect answers 
@@ -270,5 +272,5 @@ window.onload = function(){
 	document.querySelector("#app").style.display = "none";
 	document.querySelector("#answers").style.display = "block";
 	document.querySelector("#end").style.display = "none";
-    updateJSON(aufg1.note, true);
+    //updateJSON(aufg1.note, true);
 }
