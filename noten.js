@@ -64,7 +64,7 @@ var questionCounter = 0;
 var correctNo = 0;
 var appResponse;
 
-
+/*
 var aufg1 = { 
 	note: [
 		{"a":"c/4", "l":["C","D","E","H"]},
@@ -73,9 +73,9 @@ var aufg1 = {
 		{"a":"b/4", "l":["H","F","D","E"]},
 	]
 };
+*/
 
-
-//var aufg1 = {};
+var aufg1 = {};
 
 setupVF(notes[questionCounter]);
 
@@ -91,8 +91,12 @@ function setClef(clef){
 		console.dir(note);
 
 		for(var elm in note){
-			if(elm != "shuffle")
-				note[elm]["a"] = note[elm]["a"][0].toLowerCase() + "/" + note[elm]["a"][1];
+			if(elm != "shuffle"){
+				if(clef == "treble")
+					note[elm]["a"] = note[elm]["a"][0].toLowerCase() + "/" + note[elm]["a"][1];
+				else
+					note[elm]["a"] = note[elm]["a"][0].toLowerCase() + "/" + (parseInt(note[elm]["a"][1])-2);
+			}
 		}
 		console.log("note neu:");
 		console.dir(note);
@@ -192,7 +196,7 @@ function answer(note){
 	*/
 
 	//Check if answer was correct
-	if(note == aufg1["note"][questionCounter].a){
+	if(note == aufg1["note"][questionCounter].a[0]){
 		correctNo++;
 	}
 
@@ -253,7 +257,7 @@ function fetchQuestions(){
 var answers = document.querySelectorAll(".answer");
 for(var i = 0; i < answers.length; i++){
 	answers[i].addEventListener("click", function(){
-		answer((this.innerHTML).toLowerCase()+"/4");
+		answer((this.innerHTML).toLowerCase());
 	});
 }
 

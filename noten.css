@@ -110,6 +110,10 @@ h1, h2, h3, h4{
 	padding: 10px;
 }
 
+#end p{
+	margin: 2px;
+}
+
 #progressIndicator{
 	margin-top: 25px;
 	display: table;

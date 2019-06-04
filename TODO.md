@@ -1,5 +1,3 @@
 # TODOs
 
-- check if bass treble is working properly
-- finish implementing AJAX to fetch new questions
-- check with Professor if given AJAX-Question format is correct (!!!)
+- implement functionality for Set 1, meaning if there are no questions to be loaded from server
