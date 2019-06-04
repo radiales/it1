@@ -57,9 +57,12 @@ var pieChartContext = piechart.getContext("2d");
 
 const answerHandler = document.querySelectorAll(".answer");
 var quizClef = "treble";
+
+/*
 var possibleNotes = ["b/3", "c/4", "d/4", "e/4", "f/4", "g/4", "a/4", "b/4", "c/5", "d/5", "e/5"];
 //var notes = ["D4", "C4", "E5", "F4", "H3"];
 var notes = ["d/4", "c/4", "e/5", "f/4", "b/3"];
+*/
 var questionCounter = 0;
 var correctNo = 0;
 var appResponse;
@@ -77,7 +80,7 @@ var aufg1 = {
 
 var aufg1 = {};
 
-setupVF(notes[questionCounter]);
+//setupVF(notes[questionCounter]);
 
 function setClef(clef){
 	quizClef = clef;
@@ -102,8 +105,32 @@ function setClef(clef){
 		console.dir(note);
 
 		aufg1 = {note};
-	} else{
+	} else {
 		console.log("Did not call fetchQuestions");
+		var notes = ["c", "d", "e", "f", "g", "a", "b"];
+
+		aufg1 = { 
+			note: [
+				{"a":"c/4", "l":["C","D","E","H"]},
+				{"a":"d/4", "l":["D","C","G","F"]},
+				{"a":"f/4", "l":["F","C","G","E"]},
+				{"a":"b/4", "l":["B","F","D","E"]},
+			]
+		};
+		
+		for(var i = 0; i < aufg1.note.length; i++){
+			aufg1.note[i].a = notes[parseInt(Math.round(Math.random()*notes.length))%notes.length] + "/4";
+			aufg1.note[i].l[0] = aufg1.note[i].a[0].toUpperCase();
+
+			for(var j = 1; j < aufg1.note[i].l.length; j++){
+				while(aufg1.note[i].l[j] == aufg1.note[i].a[0].toUpperCase()){
+					aufg1.note[i].l[j] = notes[parseInt(Math.round(Math.random()*notes.length))%notes.length].toUpperCase();
+				}
+			}
+
+			console.log("random note:" + notes[parseInt(Math.round(Math.random()*notes.length))]);
+		}
+		
 	}
 
 	console.log("Calling setupVF with " + aufg1.note[questionCounter]["a"]);
