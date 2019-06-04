@@ -119,7 +119,7 @@ function setClef(clef){
 		};
 		
 		for(var i = 0; i < aufg1.note.length; i++){
-			aufg1.note[i].a = notes[parseInt(Math.round(Math.random()*notes.length))%notes.length] + "/4";
+			aufg1.note[i].a = notes[parseInt(Math.round(Math.random()*notes.length))%notes.length] + ((clef=="treble")?"/4":"/2");
 			aufg1.note[i].l[0] = aufg1.note[i].a[0].toUpperCase();
 
 			for(var j = 1; j < aufg1.note[i].l.length; j++){
