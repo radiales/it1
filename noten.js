@@ -86,10 +86,17 @@ function setClef(clef){
 	quizClef = clef;
 	
 	if(document.querySelector("#setSelect").selectedIndex != 0){
-		console.log("Calling fetchQuestions");
-		fetchQuestions();
-		var note = JSON.parse(appResponse)["noten" + document.querySelector("#setSelect").selectedIndex]; //TODO: Check if -1 really is correct
-		
+
+		if(document.querySelector("#setSelect").selectedIndex < 4){
+			console.log("Calling fetchQuestions for own tasks.");
+			fetchQuestions(false);
+			var note = JSON.parse(appResponse)["noten" + document.querySelector("#setSelect").selectedIndex];
+		} else {
+			console.log("Calling fetchQuestions for Beispielaufgaben.");
+			fetchQuestions(true);
+			var note = JSON.parse(appResponse)["note"];
+		}
+
 		console.log("note:");
 		console.dir(note);
 
@@ -107,7 +114,6 @@ function setClef(clef){
 		aufg1 = {note};
 	} else {
 		console.log("Did not call fetchQuestions");
-		var notes = ["c", "d", "e", "f", "g", "a", "b"];
 
 		aufg1 = { 
 			note: [
@@ -119,16 +125,19 @@ function setClef(clef){
 		};
 		
 		for(var i = 0; i < aufg1.note.length; i++){
-			aufg1.note[i].a = notes[parseInt(Math.round(Math.random()*notes.length))%notes.length] + ((clef=="treble")?"/4":"/2");
+			var notes = ["c", "d", "e", "f", "g", "a", "b"];
+			var randomIndex = parseInt(Math.round(Math.random()*notes.length))%notes.length;
+			aufg1.note[i].a = notes[randomIndex] + ((clef=="treble")?"/4":"/2");
 			aufg1.note[i].l[0] = aufg1.note[i].a[0].toUpperCase();
+			notes.splice(randomIndex, randomIndex+1);
 
 			for(var j = 1; j < aufg1.note[i].l.length; j++){
-				while(aufg1.note[i].l[j] == aufg1.note[i].a[0].toUpperCase()){
-					aufg1.note[i].l[j] = notes[parseInt(Math.round(Math.random()*notes.length))%notes.length].toUpperCase();
-				}
+				var randomIndex = parseInt(Math.round(Math.random()*notes.length))%notes.length;
+				console.log("random index: " + randomIndex);
+				console.log("random note:" + notes[randomIndex]);
+				aufg1.note[i].l[j] = notes[randomIndex].toUpperCase();
+				notes.splice(randomIndex, randomIndex+1);
 			}
-
-			console.log("random note:" + notes[parseInt(Math.round(Math.random()*notes.length))]);
 		}
 		
 	}
@@ -266,7 +275,7 @@ for(var i = 0; i < clefOptions.length; i++){
 }
 
 //Fetch new questions from server as json
-function fetchQuestions(){
+function fetchQuestions(Beispielaufgaben){
 	var xh = new XMLHttpRequest();
 	//xh.responseType = "json";		//synchronous request can't set reponseType per definition
 
@@ -276,7 +285,10 @@ function fetchQuestions(){
 			//console.log(this.response);
 		}
 	};
-	xh.open("GET", "aufgaben.json", false);		//CAUTION, request is set to synchronous because app can't continue without result
+	if(Beispielaufgaben)
+		xh.open("GET", "https://idefix.informatik.htw-dresden.de/it1/beleg/noten-aufgaben.js", false);		//CAUTION, request is set to synchronous because app can't continue without result
+	else
+		xh.open("GET", "aufgaben.json", false);
 	xh.send();
 }
 
